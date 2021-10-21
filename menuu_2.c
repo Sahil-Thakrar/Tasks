@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <pthread.h>
+#include<stdlib.h>
 #include <unistd.h>
 #include <syslog.h>
 #include <signal.h>
@@ -12,11 +13,12 @@ static pthread_t thread_list[MAX_NUM_THREADS];
 static unsigned int thread_list_counter=0;
 static int Infinite;
 static int log;
+static void join_threads();
 
 static void sigintHandler(int sig_num)
 {
-    printf("\n You Cannot terminate the process with keyboard Interrupt \n");
-    fflush(stdout);
+    join_threads();
+    exit(0);
 }
 
 static void logs(long unsigned int id)
@@ -30,7 +32,7 @@ static void file_content(char *data,FILE *pointer)
     fputs(data,pointer);
 }
 
-void* thread_func(void *arg)
+static void* thread_func(void *arg)
 {
     sprintf(buff,"thread [%lu] is running...\n", pthread_self());
     if(Infinite == 1)
