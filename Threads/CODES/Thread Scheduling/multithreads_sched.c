@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <sched.h>
+
 void *myThreadFun(void *arg)
 {
     int *no = (int *)arg;
@@ -12,7 +13,7 @@ void *myThreadFun(void *arg)
 	    printf("==============\n");
        printf("We are Printing from Thread no %d \n",*no);
 	    printf("==============\n");
-	    printf("\n\n");
+	    printf("\n");
        sleep(10);
     }
     return NULL;
@@ -20,8 +21,8 @@ void *myThreadFun(void *arg)
 int main()
 {
     int err;
-    //char buff[100];
-    //int j[]={77,55,88,66,99};
+    char buff[16];
+    char bufff[16];
     int j[]={6,8,5,7,12};
     int z[]={0,1,2,3,4};
     pthread_t thread_id[5];
@@ -33,8 +34,6 @@ int main()
     printf("MIN:: %d\n",b);
     for(int i=0;i<5;i++)
     {
-        //sprintf(buff,"Thread %d",i);
-        //pthread_setname_np(thread_id[i],"HIh");
         param[i].sched_priority = j[i];
         err=pthread_attr_init(&attr[i]);
         if(err)
@@ -56,15 +55,21 @@ int main()
         {
             printf("Setting of the scheduling parameters cannot be initialized\n");
         }
-        printf("Before Thread %d\n",i);
     }
  
     for(int i=0;i<5;i++)
     {
+    	printf("Before Thread %d\n\n",i);
     	err=pthread_create(&thread_id[i],&attr[i],myThreadFun,(void *)&z[i]);
         if(err)
         {
             printf("Thread cannot be created\n");
+        }
+        sprintf(buff,"IT IS THREAD %d",i);
+        err=pthread_setname_np(thread_id[i],buff);
+        if(err)
+        {
+            printf("Name cannot be given to thread %d\n",i);
         }
     }
     
